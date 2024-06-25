@@ -43,5 +43,8 @@ public @interface Alias {
    *
    * @return the alias name
    */
+  /**
+   * @return 别名
+   */
   String value();
 }

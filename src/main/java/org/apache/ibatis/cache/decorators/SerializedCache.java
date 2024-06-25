@@ -34,6 +34,9 @@ import org.apache.ibatis.io.SerialFilterChecker;
  */
 public class SerializedCache implements Cache {
 
+  /**
+   * 装饰的 Cache 对象
+   */
   private final Cache delegate;
 
   public SerializedCache(Cache delegate) {
@@ -116,7 +119,7 @@ public class SerializedCache implements Cache {
 
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException {
-      return Resources.classForName(desc.getName());
+      return Resources.classForName(desc.getName()); // 解析类
     }
 
   }
