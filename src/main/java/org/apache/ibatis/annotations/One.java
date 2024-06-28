@@ -54,12 +54,18 @@ public @interface One {
    *
    * @return the statement id
    */
+  /**
+   * @return 已映射语句（也就是映射器方法）的全限定名
+   */
   String select() default "";
 
   /**
    * Returns the fetch strategy for nested statement.
    *
    * @return the fetch strategy
+   */
+  /**
+   * @return 加载类型
    */
   FetchType fetchType() default FetchType.DEFAULT;
 

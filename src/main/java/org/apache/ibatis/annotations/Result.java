@@ -77,12 +77,18 @@ public @interface Result {
    *
    * @return the {@link TypeHandler} type
    */
+  /**
+   * @return 使用的 TypeHandler 处理器
+   */
   Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
 
   /**
    * Returns the mapping definition for single relationship.
    *
    * @return the mapping definition for single relationship
+   */
+  /**
+   * @return {@link One} 注解
    */
   One one() default @One;
 
