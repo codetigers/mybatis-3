@@ -27,29 +27,75 @@ import org.apache.ibatis.session.ResultHandler;
 
 /**
  * @author Clinton Begin
+ *
+ * StatementHandler 首先通过 ParameterHandler 完成 SQL 语句的实参绑定，然后通过 java.sql.Statement 对象执行 SQL 语句并得到结果集，最后通过 ResultSetHandler 完成结果集的映射，得到结果对象并返回。
  */
 public interface StatementHandler {
 
+  /**
+   * 准备操作，可以理解成创建 Statement 对象
+   *
+   * @param connection         Connection 对象
+   * @param transactionTimeout 事务超时时间
+   * @return Statement 对象
+   */
   Statement prepare(Connection connection, Integer transactionTimeout)
       throws SQLException;
 
+  /**
+   * 设置 Statement 对象的参数
+   *
+   * @param statement Statement 对象
+   */
   void parameterize(Statement statement)
       throws SQLException;
 
+  /**
+   * 添加 Statement 对象的批量操作
+   *
+   * @param statement Statement 对象
+   */
   void batch(Statement statement)
       throws SQLException;
 
+  /**
+   * 执行写操作
+   *
+   * @param statement Statement 对象
+   * @return 影响的条数
+   */
   int update(Statement statement)
       throws SQLException;
 
+  /**
+   * 执行读操作
+   *
+   * @param statement Statement 对象
+   * @param resultHandler ResultHandler 对象，处理结果
+   * @param <E> 泛型
+   * @return 读取的结果
+   */
   <E> List<E> query(Statement statement, ResultHandler resultHandler)
       throws SQLException;
 
+  /**
+   * 执行读操作，返回 Cursor 对象
+   *
+   * @param statement Statement 对象
+   * @param <E> 泛型
+   * @return Cursor 对象
+   */
   <E> Cursor<E> queryCursor(Statement statement)
       throws SQLException;
 
+  /**
+   * @return BoundSql 对象
+   */
   BoundSql getBoundSql();
 
+  /**
+   * @return ParameterHandler 对象
+   */
   ParameterHandler getParameterHandler();
 
 }

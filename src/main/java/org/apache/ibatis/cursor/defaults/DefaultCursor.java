@@ -41,12 +41,28 @@ public class DefaultCursor<T> implements Cursor<T> {
   private final ResultMap resultMap;
   private final ResultSetWrapper rsw;
   private final RowBounds rowBounds;
+  /**
+   * ObjectWrapperResultHandler 对象
+   */
   protected final ObjectWrapperResultHandler<T> objectWrapperResultHandler = new ObjectWrapperResultHandler<>();
 
+  /**
+   * CursorIterator 对象，游标迭代器。
+   */
   private final CursorIterator cursorIterator = new CursorIterator();
+  /**
+   * 是否开始迭代
+   *
+   * {@link #iterator()}
+   */
   private boolean iteratorRetrieved;
-
+  /**
+   * 游标状态
+   */
   private CursorStatus status = CursorStatus.CREATED;
+  /**
+   * 已完成映射的行数
+   */
   private int indexWithRowBound = -1;
 
   private enum CursorStatus {
@@ -168,12 +184,17 @@ public class DefaultCursor<T> implements Cursor<T> {
 
   protected static class ObjectWrapperResultHandler<T> implements ResultHandler<T> {
 
+    /**
+     * 结果对象
+     */
     protected T result;
     protected boolean fetched;
 
     @Override
     public void handleResult(ResultContext<? extends T> context) {
+      // <1> 设置结果对象
       this.result = context.getResultObject();
+      // <2> 暂停
       context.stop();
       fetched = true;
     }
@@ -184,10 +205,19 @@ public class DefaultCursor<T> implements Cursor<T> {
     /**
      * Holder for the next object to be returned.
      */
+    /**
+     * Holder for the next object to be returned
+     *
+     * 结果对象，提供给 {@link #next()} 返回
+     */
     T object;
 
     /**
      * Index of objects returned using next(), and as such, visible to users.
+     */
+    /**
+     * Index of objects returned using next(), and as such, visible to users.
+     * 索引位置
      */
     int iteratorIndex = -1;
 
