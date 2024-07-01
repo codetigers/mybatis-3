@@ -148,6 +148,10 @@ public class Configuration {
   protected Class<?> configurationFactory;
 
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
+
+  /**
+   * 拦截器链
+   */
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
@@ -642,10 +646,13 @@ public class Configuration {
    * @since 3.5.1
    */
   public LanguageDriver getLanguageDriver(Class<? extends LanguageDriver> langClass) {
+    // 获得 langClass 类
     if (langClass == null) {
       return languageRegistry.getDefaultDriver();
     }
+    // 如果为空，则使用默认类
     languageRegistry.register(langClass);
+    // 获得 LanguageDriver 对象
     return languageRegistry.getDriver(langClass);
   }
 
@@ -746,8 +753,11 @@ public class Configuration {
   }
 
   public void addResultMap(ResultMap rm) {
+    // <1> 添加到 resultMaps 中
     resultMaps.put(rm.getId(), rm);
+    // 遍历全局的 ResultMap 集合，若其拥有 Discriminator 对象，则判断是否强制标记为有内嵌的 ResultMap
     checkLocallyForDiscriminatedNestedResultMaps(rm);
+    // 若传入的 ResultMap 不存在内嵌 ResultMap 并且有 Discriminator ，则判断是否需要强制表位有内嵌的 ResultMap
     checkGloballyForDiscriminatedNestedResultMaps(rm);
   }
 
@@ -857,6 +867,7 @@ public class Configuration {
   }
 
   public void addMappers(String packageName) {
+    // 扫描该包下所有的 Mapper 接口，并添加到 mapperRegistry 中
     mapperRegistry.addMappers(packageName);
   }
 
@@ -958,12 +969,17 @@ public class Configuration {
 
   // Slow but a one time cost. A better solution is welcome.
   protected void checkGloballyForDiscriminatedNestedResultMaps(ResultMap rm) {
+    // 如果传入的 ResultMap 有内嵌的 ResultMap
     if (rm.hasNestedResultMaps()) {
+      // 遍历全局的 ResultMap 集合
       for (Map.Entry<String, ResultMap> entry : resultMaps.entrySet()) {
         Object value = entry.getValue();
         if (value instanceof ResultMap) {
           ResultMap entryResultMap = (ResultMap) value;
+          // 判断遍历的全局的 entryResultMap 不存在内嵌 ResultMap 并且有 Discriminator
           if (!entryResultMap.hasNestedResultMaps() && entryResultMap.getDiscriminator() != null) {
+            // 判断是否 Discriminator 的 ResultMap 集合中，使用了传入的 ResultMap 。
+            // 如果是，则标记为有内嵌的 ResultMap
             Collection<String> discriminatedResultMapNames = entryResultMap.getDiscriminator().getDiscriminatorMap().values();
             if (discriminatedResultMapNames.contains(rm.getId())) {
               entryResultMap.forceNestedResultMaps();
