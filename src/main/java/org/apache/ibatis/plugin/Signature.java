@@ -35,6 +35,9 @@ public @interface Signature {
    *
    * @return the java type
    */
+  /**
+   * @return 类
+   */
   Class<?> type();
 
   /**
@@ -42,11 +45,17 @@ public @interface Signature {
    *
    * @return the method name
    */
+  /**
+   * @return 方法名
+   */
   String method();
 
   /**
    * Returns java types for method argument.
    * @return java types for method argument
+   */
+  /**
+   * @return 参数类型
    */
   Class<?>[] args();
 }
